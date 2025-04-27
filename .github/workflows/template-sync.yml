@@ -1,12 +1,10 @@
-name: actions-template-sync
-
+name: Sync template
 on:
-  schedule:
-    - cron: "00 20 * * *"           # JST 05:00
+  schedule: [cron: '00 20 * * *']   # JST 05:00
   workflow_dispatch:
 
 jobs:
-  repo-sync:
+  sync:
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -15,14 +13,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # 差分が無ければ exit 1 になるが continue-on-error で握りつぶす
       - name: actions-template-sync
+        id: template
         uses: AndreasAugustin/actions-template-sync@v2.5.1
+        continue-on-error: true
         with:
-          # 必須 -----------------------------
-          source_gh_token: ${{ secrets.GITHUB_TOKEN }}  # or PAT
+          source_gh_token: ${{ secrets.GITHUB_TOKEN }}
           source_repo_path: yogeshwaran01/github-stats-terminal-style
-          # オプション -------------------------
           upstream_branch: main
           pr_reviewers: khitoshi
           git_user_name: Github Actions
           git_user_email: action@github.com
+
+      # 差分ゼロならログを出して終了
+      - name: Nothing to update
+        if: steps.template.outcome == 'failure' && steps.template.outputs.pr_branch == ''
+        run: echo "No change - normal termination"
