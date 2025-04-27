@@ -2,7 +2,7 @@ name: actions-template-sync
 
 on:
   schedule:
-    - cron: "00 20 * * *"     # JST 05:00
+    - cron: "00 20 * * *"           # JST 05:00
   workflow_dispatch:
 
 jobs:
@@ -16,11 +16,13 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: actions-template-sync
-        uses: AndreasAugustin/actions-template-sync@v2.5.1   # ← バージョン固定
+        uses: AndreasAugustin/actions-template-sync@v2.5.1
         with:
-          source_gh_token: ${{ secrets.GHT }}
+          # 必須 -----------------------------
+          source_gh_token: ${{ secrets.GHT }}  # or PAT
           source_repo_path: yogeshwaran01/github-stats-terminal-style
+          # オプション -------------------------
           upstream_branch: main
-          pr_reviewers: Khitoshi
+          pr_reviewers: khitoshi
           git_user_name: Github Actions
           git_user_email: action@github.com
