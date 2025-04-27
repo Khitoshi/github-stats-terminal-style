@@ -64,21 +64,13 @@ class GithubUser {
     }
 
     async fetchContent() {
-        const authenticatedUser = await octokit.users.getAuthenticated();
-        
         this.userContent = await octokit.request("GET /users/{username}", {
             username: this.userName,
         });
-        if (authenticatedUser.data.login === this.userName) {//認証ユーザー自身のリポジトリを取得する場合は、プライベートリポジトリも取得する
-            this.repoContent = await octokit.paginate("GET /user/repos", {
+        this.repoContent = await octokit.paginate("GET /user/repos", {
                 visibility: "all",
                 affiliation: "owner"
             });
-        } else {// 他のユーザーのリポジトリを取得する場合は、publicのみを取得する
-            this.repoContent = await octokit.paginate("GET /users/{owner}/repos", {
-                owner: this.userName
-            });
-        }
         this.name = this.userContent.data.name;
         this.repo = align(this.userContent.data.public_repos);
         this.gists = align(this.userContent.data.public_gists);
