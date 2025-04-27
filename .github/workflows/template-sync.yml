@@ -19,7 +19,7 @@ jobs:
         uses: AndreasAugustin/actions-template-sync@v2.5.1
         with:
           # 必須 -----------------------------
-          source_gh_token: ${{ secrets.GHT }}  # or PAT
+          source_gh_token: ${{ secrets.GITHUB_TOKEN }}  # or PAT
           source_repo_path: yogeshwaran01/github-stats-terminal-style
           # オプション -------------------------
           upstream_branch: main
