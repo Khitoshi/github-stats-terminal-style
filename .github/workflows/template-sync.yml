@@ -1,0 +1,26 @@
+name: actions-template-sync
+
+on:
+  schedule:
+    - cron: "00 20 * * *"     # JST 05:00
+  workflow_dispatch:
+
+jobs:
+  repo-sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: actions-template-sync
+        uses: AndreasAugustin/actions-template-sync@v2.5.1   # ← バージョン固定
+        with:
+          source_gh_token: ${{ secrets.GHT }}
+          source_repo_path: yogeshwaran01/github-stats-terminal-style
+          upstream_branch: main
+          pr_reviewers: Khitoshi
+          git_user_name: Github Actions
+          git_user_email: action@github.com
