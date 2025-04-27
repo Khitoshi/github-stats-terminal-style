@@ -32,18 +32,35 @@ class GithubUser {
     }
 
     async getCommits() {
-        let res = await octokit.search.commits({
-            q: `author:${this.userName}`
-        })
-        return res.data.total_count
+        // public
+        const pub = await octokit.search.commits({
+          q: `author:${this.userName} is:public`,
+          per_page: 1
+        });
+    
+        // private
+        const pri = await octokit.search.commits({
+          q: `author:${this.userName} is:private`,
+          per_page: 1
+        });
+    
+        return pub.data.total_count + pri.data.total_count;
     }
 
     async getIssueAndPr(type) {
-        let res = await octokit.search.issuesAndPullRequests({
-            q: `type:${type} author:${this.userName}`
-        })
-
-        return res.data.total_count
+        // public
+        const pub = await octokit.search.issuesAndPullRequests({
+            q: `author:${this.userName} is:public`,
+            per_page: 1
+        });
+      
+        // private
+        const pri = await octokit.search.issuesAndPullRequests({
+          q: `author:${this.userName} is:private`,
+          per_page: 1
+        });
+      
+        return pub.data.total_count + pri.data.total_count;
     }
 
     async fetchContent() {
